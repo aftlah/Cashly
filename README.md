@@ -1,6 +1,6 @@
 # 💰 Cashly
 
-**Cashly** adalah aplikasi web untuk mencatat pengeluaran dan pemasukan harian dengan antarmuka modern, ringan, dan ramah untuk remaja. Dengan Cashly, kamu bisa mengelola uang saku, mencatat jajan, menabung, dan mengontrol keuangan pribadi dengan mudah.
+**Cashly** adalah aplikasi berbasis web untuk mencatat pengeluaran dan pemasukan harian dengan antarmuka modern, ringan, dan ramah untuk remaja. Dengan Cashly, kamu bisa mengelola uang saku, mencatat jajan, menabung, dan mengontrol keuangan pribadi dengan mudah.
 
 ---
 
