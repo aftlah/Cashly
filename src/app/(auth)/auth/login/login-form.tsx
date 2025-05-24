@@ -36,29 +36,30 @@ export default function LoginForm() {
     }
   }
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
-    setLoading(true)
+  const handleSignUp = async () => {
+    router.push('/auth/register')
+    // e.preventDefault()
+    // setError(null)
+    // setLoading(true)
 
-    try {
-      const supabase = createClient()
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-      })
+    // try {
+    //   const supabase = createClient()
+    //   const { error } = await supabase.auth.signUp({
+    //     email,
+    //     password,
+    //   })
 
-      if (error) {
-        throw error
-      }
+    //   if (error) {
+    //     throw error
+    //   }
 
-      router.push('/')
-      router.refresh()
-    } catch (error: any) {
-      setError(error.message)
-    } finally {
-      setLoading(false)
-    }
+    //   router.push('/')
+    //   router.refresh()
+    // } catch (error: any) {
+    //   setError(error.message)
+    // } finally {
+    //   setLoading(false)
+    // }
   }
 
   return (
@@ -120,7 +121,7 @@ export default function LoginForm() {
           disabled={loading}
           className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
         >
-          Create account
+          Register
         </button>
       </div>
     </form>
