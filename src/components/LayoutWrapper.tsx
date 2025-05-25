@@ -12,5 +12,5 @@ export function LayoutWrapper({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
 
-  return <Layouts>{children}</Layouts>;
+  return <Layouts showWelcome>{children}</Layouts>;
 }

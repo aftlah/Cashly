@@ -5,14 +5,17 @@ import { getUserFromCookies } from '@/lib/auth'
 
 export default async function LoginPage() {
   const supabase = await createClient()
-  const { data: { session } } = await supabase.auth.getSession()
+  // const { data: { session } } = await supabase.auth.getSession()
 
-  // console.log('Session:', session)
+  // // console.log('Session:', session)
 
-  const user = await getUserFromCookies();
-  // console.log('Current user:', user);
-  
-  if (session) {
+  // const user = await getUserFromCookies();
+
+  // if (session) {
+  //   redirect('/')
+  // }
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user) {
     redirect('/')
   }
 
