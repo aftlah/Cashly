@@ -67,7 +67,7 @@ const transactions = [
   { id: '5', date: '2024-03-16', amount: 500, type: 'expense', description: 'Coffee' },
 ]
 
-export const DashboardPage = () => {
+const Dashboard = () => {
   const [chartPeriod, setChartPeriod] = useState<'daily' | 'weekly' | 'monthly'>('daily')
   const [isMobile, setIsMobile] = useState(false)
 
@@ -236,3 +236,5 @@ export const DashboardPage = () => {
     </div>
   )
 }
+
+export default Dashboard
