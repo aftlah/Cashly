@@ -14,7 +14,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (session && pathName.includes(request.nextUrl.pathname)) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+    return NextResponse.redirect(new URL('/', request.url))
   }
 
   // if (session && request.nextUrl.pathname === '/') {

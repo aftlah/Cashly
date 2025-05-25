@@ -13,7 +13,7 @@ export default async function LoginPage() {
   // console.log('Current user:', user);
   
   if (session) {
-    redirect('/dashboard')
+    redirect('/')
   }
 
   return (
