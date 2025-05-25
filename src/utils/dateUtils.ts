@@ -29,4 +29,4 @@ export const formatDateShort = (date: Date): string => {
 
 export const formatDate = (dateString: string): string => {
   return format(new Date(dateString), 'MMM dd, yyyy');
-}; 
+};

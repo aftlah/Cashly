@@ -45,9 +45,9 @@ const FinanceChart = ({ transactions }: FinanceChartProps) => {
   });
 
   const periods: { label: string; value: PeriodType }[] = [
-    { label: 'Today', value: 'day' },
-    { label: 'This Week', value: 'week' },
-    { label: 'This Month', value: 'month' },
+    { label: 'Hari ini', value: 'day' },
+    { label: 'Minggu ini', value: 'week' },
+    { label: 'Bulan ini', value: 'month' },
   ];
 
   useEffect(() => {
@@ -56,45 +56,44 @@ const FinanceChart = ({ transactions }: FinanceChartProps) => {
 
   const generateChartData = (period: PeriodType) => {
     let dateRange: DateRange;
-    let intervalFn: any;
+    let intervalFn: (range: DateRange) => Date[];
     let formatFn: (date: Date) => string;
 
     switch (period) {
       case 'day':
         dateRange = getTodayRange();
-        intervalFn = (range: DateRange) => [range.start];
-        formatFn = (date) => 'Today';
+        intervalFn = (range) => [range.start];
+        formatFn = () => 'Today';
         break;
       case 'week':
         dateRange = getThisWeekRange();
-        intervalFn = (range: DateRange) => eachDayOfInterval(range);
-        formatFn = (date) => formatDateShort(date);
+        intervalFn = eachDayOfInterval;
+        formatFn = formatDateShort;
         break;
       case 'month':
         dateRange = getThisMonthRange();
-        intervalFn = (range: DateRange) => eachDayOfInterval(range);
-        formatFn = (date) => formatDateShort(date);
+        intervalFn = eachDayOfInterval;
+        formatFn = formatDateShort;
         break;
       default:
         dateRange = getTodayRange();
-        intervalFn = (range: DateRange) => [range.start];
-        formatFn = (date) => 'Today';
+        intervalFn = (range) => [range.start];
+        formatFn = () => 'Today';
     }
 
     const filteredTransactions = filterTransactionsByDateRange(transactions, dateRange);
     const intervals = intervalFn(dateRange);
-    
-    const labels = intervals.map((date: Date) => formatFn(date));
-    
+
+    const labels = intervals.map((date) => formatFn(date));
     const income = Array(labels.length).fill(0);
     const expense = Array(labels.length).fill(0);
 
     filteredTransactions.forEach((transaction) => {
       const transactionDate = new Date(transaction.date);
-      const index = intervals.findIndex((date: Date) => 
+      const index = intervals.findIndex((date) => 
         format(date, 'yyyy-MM-dd') === format(transactionDate, 'yyyy-MM-dd')
       );
-      
+
       if (index !== -1) {
         if (transaction.type === 'income') {
           income[index] += transaction.amount;
@@ -116,6 +115,8 @@ const FinanceChart = ({ transactions }: FinanceChartProps) => {
         backgroundColor: 'rgba(16, 185, 129, 0.7)',
         borderColor: 'rgba(16, 185, 129, 1)',
         borderWidth: 1,
+        borderRadius: 4,
+        maxBarThickness: 40,
       },
       {
         label: 'Expense',
@@ -123,6 +124,8 @@ const FinanceChart = ({ transactions }: FinanceChartProps) => {
         backgroundColor: 'rgba(239, 68, 68, 0.7)',
         borderColor: 'rgba(239, 68, 68, 1)',
         borderWidth: 1,
+        borderRadius: 4,
+        maxBarThickness: 40,
       },
     ],
   };
@@ -130,18 +133,55 @@ const FinanceChart = ({ transactions }: FinanceChartProps) => {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
+    animation: {
+      duration: 800,
+      easing: 'easeInOutQuart' as const,
+    },
     plugins: {
       legend: {
         position: 'top' as const,
+        labels: {
+          font: {
+            size: 14,
+          },
+        },
       },
       title: {
         display: true,
         text: `${activePeriod === 'day' ? 'Today' : activePeriod === 'week' ? 'This Week' : 'This Month'}'s Finance`,
+        font: {
+          size: 18,
+          weight: 'bold' as const,
+        },
       },
+      tooltip: {
+        mode: 'index' as const,
+        intersect: false,
+        callbacks: {
+          label: (context: any) => {
+            return `${context.dataset.label}: $${context.parsed.y.toLocaleString()}`;
+          },
+        },
+      },
+    },
+    interaction: {
+      mode: 'nearest' as const,
+      axis: 'x' as const,
+      intersect: false,
     },
     scales: {
       y: {
         beginAtZero: true,
+        ticks: {
+          callback: function(value: number | string) {
+            return `$${Number(value).toLocaleString()}`;
+          },
+        },
+      },
+      x: {
+        grid: {
+          display: false,
+        },
       },
     },
   };
