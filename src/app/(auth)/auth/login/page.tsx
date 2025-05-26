@@ -1,34 +1,28 @@
-import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
-import LoginForm from './login-form'
-import { getUserFromCookies } from '@/lib/auth'
+import { redirect } from "next/navigation"
+import { createClient } from "@/lib/supabase/server"
+import LoginForm from "./login-form"
 
 export default async function LoginPage() {
   const supabase = await createClient()
-  // const { data: { session } } = await supabase.auth.getSession()
 
-  // // console.log('Session:', session)
-
-  // const user = await getUserFromCookies();
-
-  // if (session) {
-  //   redirect('/')
-  // }
-  const { data: { user } } = await supabase.auth.getUser()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
   if (user) {
-    redirect('/')
+    redirect("/")
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-2 px-4 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Sign in to your account
-        </h2>
+        <div className="bg-white border-4 border-slate-800 p-3 shadow-[8px_8px_0px_0px_#64748b] mb-8">
+          <h2 className="text-center text-4xl font-black text-slate-800 uppercase tracking-tight">Welcome Back</h2>
+          <p className="text-center text-lg font-bold text-slate-600 mt-2">Sign in to your account!</p>
+        </div>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white border-4 border-slate-800 shadow-[12px_12px_0px_0px_#475569] p-7">
           <LoginForm />
         </div>
       </div>
