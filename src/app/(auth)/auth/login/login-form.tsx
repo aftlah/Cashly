@@ -1,10 +1,10 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
+import Cookies from "js-cookie"
 
 export default function LoginForm() {
   const router = useRouter()
@@ -20,14 +20,30 @@ export default function LoginForm() {
 
     try {
       const supabase = createClient()
-      const { error } = await supabase.auth.signInWithPassword({
+
+      const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
 
-      if (error) {
-        throw error
+      if (loginError) {
+        throw loginError
       }
+
+      const user = loginData.user
+
+      const { data: profileData, error: fetchError } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("id", user.id)
+        .single()
+
+      if (fetchError) {
+        throw new Error("Failed to fetch username: " + fetchError.message)
+      }
+
+      Cookies.set("username", profileData.username, { expires: 3, path: "/" })
+      Cookies.set("isNewUser", "false", { expires: 3, path: "/" })
 
       router.refresh()
     } catch (error: any) {
@@ -37,7 +53,7 @@ export default function LoginForm() {
     }
   }
 
-  const handleSignUp = async () => {
+  const handleSignUp = () => {
     router.push("/auth/register")
   }
 
@@ -86,7 +102,6 @@ export default function LoginForm() {
         </div>
 
         <div className="flex flex-col space-y-4">
-          {/* Sign In Button */}
           <button
             type="submit"
             disabled={loading}
@@ -95,7 +110,6 @@ export default function LoginForm() {
             {loading ? "Loading..." : "Sign In"}
           </button>
 
-          {/* Register Button */}
           <button
             type="button"
             onClick={handleSignUp}

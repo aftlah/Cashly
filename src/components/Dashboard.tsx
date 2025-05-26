@@ -140,7 +140,9 @@ const Dashboard = () => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <div className="space-y-4">
             <h1 className="text-2xl md:text-3xl font-bold text-slate-800">{getGreeting()}, {Cookies.get("username")}</h1>
-            <p className="text-slate-600 text-sm md:text-base font-medium">Welcome back to your financial dashboard</p>
+            <p className="text-slate-600 text-sm md:text-base font-medium">
+              "Welcome to Cashly! Manage your finances wisely every day."
+            </p>
             <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4 text-slate-700 text-sm font-medium">
               <div className="flex items-center space-x-2 bg-slate-100 px-4 py-2 border-2 border-slate-600 rounded-lg shadow-[3px_3px_0px_0px_#475569]">
                 <Calendar size={16} />

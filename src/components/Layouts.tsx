@@ -81,7 +81,7 @@ export const Layouts = ({ children }: LayoutsProps) => {
 
     const navItems = [
         { href: "/", icon: <LayoutDashboard size={20} />, label: "Dashboard" },
-        { href: "/add", icon: <PlusCircle size={20} />, label: "Add Transaction" },
+        { href: "/transactions/add", icon: <PlusCircle size={20} />, label: "Add Transaction" },
         { href: "/transactions", icon: <ListOrdered size={20} />, label: "Transactions" },
     ]
 
