@@ -112,7 +112,8 @@ export const Layouts = ({ children }: LayoutsProps) => {
                                 >
                                     {/* Avatar */}
                                     <div className="h-8 w-8 bg-slate-700 rounded-lg flex items-center justify-center text-white text-sm font-bold border-2 border-slate-700">
-                                        {getUserInitials(user?.username)}
+                                        {/* {getUserInitials(user?.username)} */}
+                                        {getUserInitials(Cookies.get("username") || user?.username)}
                                     </div>
 
                                     {/* Username */}

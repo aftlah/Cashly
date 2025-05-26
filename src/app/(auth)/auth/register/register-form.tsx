@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/client"
 import { ArrowLeft } from "lucide-react"
 import { z } from "zod"
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs"
+import Cookies from "js-cookie"
 
 // Zod validation schema
 const registerBaseSchema = z.object({
@@ -128,34 +129,50 @@ export default function RegisterForm() {
 
         try {
             const supabase = createClientComponentClient()
-            const { error } = await supabase.auth.signUp({
+
+            const { data, error } = await supabase.auth.signUp({
                 email: formData.email,
                 password: formData.password,
             })
 
-            if (!error) {
-                const { error: profileError } = await supabase
-                    .from("profiles")
-                    .insert([{ email: formData.email, username: formData.username }]);
+            if (error) throw error
+            const user = data.user
+            if (!user) throw new Error("User not created")
 
-                if (profileError) {
-                    throw profileError;
-                }
+            // Update username ke tabel profiles
+            const { error: updateError } = await supabase
+                .from("profiles")
+                .update({ username: formData.username })
+                .eq("id", user.id)
+
+            if (updateError) {
+                throw new Error("User created, but failed to update profile: " + updateError.message)
             }
 
-            if (error) {
-                throw error
+            const { data: profileData, error: fetchError } = await supabase
+                .from("profiles")
+                .select("username")
+                .eq("id", user.id)
+                .single()
+
+            if (fetchError) {
+                throw new Error("Failed to fetch username: " + fetchError.message)
             }
+
+            Cookies.set("username", profileData.username, { expires: 3, path: "/" })
+            // console.log("Username saved in cookies:", profileData.username)
 
             setSuccess(true)
             setTimeout(() => {
                 router.push("/auth/login")
             }, 2000)
+
         } catch (error: any) {
             setGeneralError(error.message)
         } finally {
             setLoading(false)
         }
+
     }
 
     const handleBackToLogin = () => {

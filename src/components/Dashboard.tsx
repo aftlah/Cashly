@@ -7,8 +7,8 @@ import Link from "next/link"
 import { LineChart as ReLineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts"
 
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
+import Cookies from "js-cookie"
 
-// Mock utility functions
 const formatDateShort = (date: Date) => {
   return date.toLocaleDateString("id-ID", { day: "2-digit", month: "short" })
 }
@@ -139,7 +139,7 @@ const Dashboard = () => {
       <div className="bg-white border-3 border-slate-700 rounded-lg p-6 shadow-[6px_6px_0px_0px_#64748b]">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between">
           <div className="space-y-4">
-            <h1 className="text-2xl md:text-3xl font-bold text-slate-800">{getGreeting()}, User!</h1>
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-800">{getGreeting()}, {Cookies.get("username")}</h1>
             <p className="text-slate-600 text-sm md:text-base font-medium">Welcome back to your financial dashboard</p>
             <div className="flex flex-col md:flex-row md:items-center space-y-2 md:space-y-0 md:space-x-4 text-slate-700 text-sm font-medium">
               <div className="flex items-center space-x-2 bg-slate-100 px-4 py-2 border-2 border-slate-600 rounded-lg shadow-[3px_3px_0px_0px_#475569]">
