@@ -13,10 +13,15 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Cashly",
-  description: "Cashly is a platform for managing your money",
+  description: "Manage your finances wisely every day.",
 };
+
+export const viewport = {
+  themeColor: "#10b981",
+};
+
 
 export default function RootLayout({
   children,

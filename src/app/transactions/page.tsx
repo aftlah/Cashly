@@ -147,35 +147,40 @@ export default function TransactionsPage() {
             {/* Date Inputs Container */}
             <div className="flex flex-col sm:flex-row gap-3 lg:w-auto">
               {/* Start Date */}
-              <div className="relative">
-                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-20 pointer-events-none">
-                  <Calendar className="h-4 w-4 text-slate-600" />
+              <div className="flex flex-col space-y-1">
+                <label className="text-sm font-semibold text-slate-700 ml-1">Start Date</label>
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-20 pointer-events-none">
+                    <Calendar className="h-4 w-4 text-slate-600" />
+                  </div>
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                    placeholder="Start Date"
+                    className="w-full sm:w-[160px] lg:w-[180px] pl-10 pr-4 py-3 border-2 border-slate-600 rounded-lg bg-white text-slate-800 font-medium shadow-[3px_3px_0px_0px_#64748b] focus:outline-none focus:shadow-[4px_4px_0px_0px_#475569] focus:translate-x-[-1px] focus:translate-y-[-1px] transition-all duration-200"
+                  />
                 </div>
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  placeholder="Start Date"
-                  className="w-full sm:w-[160px] lg:w-[180px] pl-10 pr-4 py-3 border-2 border-slate-600 rounded-lg bg-white text-slate-800 font-medium shadow-[3px_3px_0px_0px_#64748b] focus:outline-none focus:shadow-[4px_4px_0px_0px_#475569] focus:translate-x-[-1px] focus:translate-y-[-1px] transition-all duration-200"
-                />
               </div>
 
               {/* End Date */}
-              <div className="relative">
-                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-20 pointer-events-none">
-                  <Calendar className="h-4 w-4 text-slate-600" />
+              <div className="flex flex-col space-y-1">
+                <label className="text-sm font-semibold text-slate-700 ml-1">End Date</label>
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-20 pointer-events-none">
+                    <Calendar className="h-4 w-4 text-slate-600" />
+                  </div>
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
+                    placeholder="End Date"
+                    className="w-full sm:w-[160px] lg:w-[180px] pl-10 pr-4 py-3 border-2 border-slate-600 rounded-lg bg-white text-slate-800 font-medium shadow-[3px_3px_0px_0px_#64748b] focus:outline-none focus:shadow-[4px_4px_0px_0px_#475569] focus:translate-x-[-1px] focus:translate-y-[-1px] transition-all duration-200"
+                  />
                 </div>
-                <input
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  placeholder="End Date"
-                  className="w-full sm:w-[160px] lg:w-[180px] pl-10 pr-4 py-3 border-2 border-slate-600 rounded-lg bg-white text-slate-800 font-medium shadow-[3px_3px_0px_0px_#64748b] focus:outline-none focus:shadow-[4px_4px_0px_0px_#475569] focus:translate-x-[-1px] focus:translate-y-[-1px] transition-all duration-200"
-                />
               </div>
             </div>
           </div>
-
           {/* Clear Filters Button */}
           {(searchQuery || startDate || endDate) && (
             <motion.button
@@ -237,16 +242,19 @@ export default function TransactionsPage() {
                     </motion.div>
                     <div className="flex-1">
                       <p className="text-base font-semibold text-slate-800">{transaction.description}</p>
-                      <motion.p
-                        whileHover={{ scale: 1.02 }}
-                        className={`text-lg font-bold ${transaction.type === "income" ? "text-emerald-600" : "text-red-600"
-                          }`}
-                      >
-                        {transaction.type === "income" ? "+" : "-"}Rp {formatCurrency(transaction.amount)}
-                      </motion.p>
-                      <p className="text-sm text-slate-600 font-medium">
-                        {formatDateShort(new Date(transaction.date))}
-                      </p>
+                      {/* Mobile: Amount and Date side by side */}
+                      <div className="flex items-center justify-between sm:block">
+                        <motion.p
+                          whileHover={{ scale: 1.02 }}
+                          className={`text-lg font-bold ${transaction.type === "income" ? "text-emerald-600" : "text-red-600"
+                            }`}
+                        >
+                          {transaction.type === "income" ? "+" : "-"}Rp {formatCurrency(transaction.amount)}
+                        </motion.p>
+                        <p className="text-sm text-slate-600 font-medium">
+                          {formatDateShort(new Date(transaction.date))}
+                        </p>
+                      </div>
                     </div>
                   </div>
 

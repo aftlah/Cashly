@@ -69,7 +69,6 @@ export const Layouts = ({ children }: LayoutsProps) => {
         router.push("/settings")
     }
 
-    // Get user initials for avatar
     const getUserInitials = (username?: string) => {
         if (!username) return "U"
         const names = username.split(" ")
@@ -108,17 +107,17 @@ export const Layouts = ({ children }: LayoutsProps) => {
                             <DropdownMenuTrigger asChild>
                                 <Button
                                     variant="ghost"
-                                    className="flex items-center space-x-2 p-3 hover:bg-slate-100 transition-colors border-2 border-transparent hover:border-slate-600 rounded-lg shadow-[3px_3px_0px_0px_#475569] hover:shadow-[4px_4px_0px_0px_#475569]"
+                                    className="flex items-center space-x-2 p-3 hover:bg-slate-100 transition-colors border-2 border-transparent border-slate-600 rounded-lg shadow-[3px_3px_0px_0px_#475569] hover:shadow-[4px_4px_0px_0px_#475569]"
                                 >
                                     {/* Avatar */}
-                                    <div className="h-8 w-8 bg-slate-700 rounded-lg flex items-center justify-center text-white text-sm font-bold border-2 border-slate-700">
+                                    <div className="h-8 w-8 rounded-lg flex items-center justify-center text-slate-700 text-sm font-bold ">
                                         {/* {getUserInitials(user?.username)} */}
                                         {getUserInitials(Cookies.get("username") || user?.username)}
                                     </div>
 
                                     {/* Username */}
                                     <span className="hidden md:inline text-sm font-semibold text-slate-800">
-                                        {user?.username || "User"}
+                                        {Cookies.get("username") || user?.username || "Guest"}
                                     </span>
 
                                     <ChevronDown size={14} className="hidden md:inline text-slate-600" />
