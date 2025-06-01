@@ -43,6 +43,7 @@ export default function LoginForm() {
       }
 
       Cookies.set("username", profileData.username, { expires: 3, path: "/" })
+      Cookies.set("userId", user.id, { expires: 3, path: "/" })
       Cookies.set("isNewUser", "false", { expires: 3, path: "/" })
 
       router.refresh()

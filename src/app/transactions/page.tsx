@@ -2,9 +2,11 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ArrowUpIcon, ArrowDownIcon, Search, Calendar, Filter } from "lucide-react"
+import { ArrowUpIcon, ArrowDownIcon, Search, Calendar, Filter, Loader2, AlertTriangle } from "lucide-react"
+import { useQuery } from "@tanstack/react-query"
+import { getTransactions, type Transaction } from "@/lib/service/Transaction"
+import Cookies from "js-cookie"
 
-// Mock utility functions
 const formatDateShort = (date: Date) => {
   return date.toLocaleDateString("id-ID", { day: "2-digit", month: "short" })
 }
@@ -13,39 +15,49 @@ const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat("id-ID").format(amount)
 }
 
-const transactions = [
-  { id: "1", date: "2024-03-20", amount: 4000, type: "income", description: "Salary" },
-  { id: "2", date: "2024-03-19", amount: 2400, type: "expense", description: "Groceries" },
-  { id: "3", date: "2024-03-18", amount: 3000, type: "income", description: "Freelance" },
-  { id: "4", date: "2024-03-17", amount: 1398, type: "expense", description: "Transport" },
-  { id: "5", date: "2024-03-16", amount: 500, type: "expense", description: "Coffee" },
-  { id: "6", date: "2024-03-15", amount: 1200, type: "expense", description: "Utilities" },
-  { id: "7", date: "2024-03-14", amount: 2500, type: "income", description: "Bonus" },
-  { id: "8", date: "2024-03-13", amount: 800, type: "expense", description: "Entertainment" },
-]
-
 export default function TransactionsPage() {
   const [searchQuery, setSearchQuery] = useState("")
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
 
-  const filteredTransactions = transactions.filter((transaction) => {
+  const userId = Cookies.get("userId");
+
+  const {
+    data: transactions = [],
+    isLoading,
+    isError,
+    error,
+    // refetch, // Anda bisa menggunakan refetch untuk memuat ulang data secara manual
+  } = useQuery<Transaction[], Error>({ // Tipe generik: data adalah Transaction[], error adalah Error
+    queryKey: ['transactions', userId], // Kunci query, userId sebagai dependency
+    queryFn: () => getTransactions(userId as string), // Pastikan userId bertipe string
+    enabled: !!userId, // Hanya jalankan query jika userId ada
+    // staleTime: 5 * 60 * 1000, // Data dianggap fresh selama 5 menit
+    // refetchOnWindowFocus: false, // Nonaktifkan refetch saat window fokus (sesuai kebutuhan)
+  });
+
+
+  const filteredTransactions = (transactions || []).filter((transaction) => {
     const matchesSearch = transaction.description.toLowerCase().includes(searchQuery.toLowerCase())
+    // Pastikan transaction.date adalah string tanggal yang valid untuk new Date()
     const transactionDate = new Date(transaction.date)
     const isAfterStart = !startDate || transactionDate >= new Date(startDate)
     const isBeforeEnd = !endDate || transactionDate <= new Date(endDate)
 
     return matchesSearch && isAfterStart && isBeforeEnd
-  })
+  });
 
   const handleUpdate = (id: string) => {
-    // Handle update logic here
     console.log("Update transaction:", id)
+    // Implementasi logic update dengan useMutation dari @tanstack/react-query
+    // Setelah update, Anda mungkin ingin invalidate query 'transactions' agar data terbaru di-fetch
+    // queryClient.invalidateQueries(['transactions', userId]);
   }
 
   const handleDelete = (id: string) => {
-    // Handle delete logic here
     console.log("Delete transaction:", id)
+    // Implementasi logic delete dengan useMutation
+    // queryClient.invalidateQueries(['transactions', userId]);
   }
 
   const clearFilters = () => {
@@ -55,13 +67,41 @@ export default function TransactionsPage() {
   }
 
   const totalIncome = filteredTransactions.filter((t) => t.type === "income").reduce((sum, t) => sum + t.amount, 0)
-
   const totalExpense = filteredTransactions.filter((t) => t.type === "expense").reduce((sum, t) => sum + t.amount, 0)
 
+  // --- Handle Loading State ---
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 p-4 md:p-6 flex flex-col justify-center items-center space-y-4">
+        <Loader2 className="h-12 w-12 text-slate-700 animate-spin" />
+        <p className="text-xl text-slate-700 font-semibold">Loading transactions...</p>
+      </div>
+    )
+  }
+
+  // --- Handle Error State ---
+  if (isError) {
+    return (
+      <div className="min-h-screen bg-slate-50 p-4 md:p-6 flex flex-col justify-center items-center space-y-4">
+        <AlertTriangle className="h-12 w-12 text-red-600" />
+        <p className="text-xl text-red-600 font-semibold">Error fetching transactions</p>
+        {/* Tampilkan pesan error dari objek error */}
+        <p className="text-slate-600">{error?.message || "An unknown error occurred."}</p>
+        {/* Anda bisa menambahkan tombol untuk mencoba lagi:
+        <button onClick={() => refetch()} className="...">Retry</button>
+        */}
+      </div>
+    )
+  }
+
+  // --- Render UI Utama ---
+  // (Sisa kode JSX Anda dari <div className="min-h-screen..."> dst. tetap sama)
+  // Pastikan semua penggunaan `transaction.date` (misal di `formatDateShort(new Date(transaction.date))`)
+  // sesuai dengan format tanggal yang Anda terima dari Supabase dan interface Transaction.
   return (
     <div className="min-h-screen bg-slate-50 p-4 md:p-6 space-y-6">
       {/* Header */}
-      <div className="bg-white border-3 border-slate-700 rounded-lg p-6 shadow-[6px_6px_0px_0px_#64748b]">
+      <div className="bg-white border-3 border-slate-700 rounded-lg p-6 shadow-[4px_4px_0px_0px_#475569]">
         <h1 className="text-2xl md:text-3xl font-bold text-slate-800">Transaction History</h1>
         <p className="text-slate-600 font-medium mt-2">Track and manage all your financial transactions</p>
       </div>
@@ -124,7 +164,7 @@ export default function TransactionsPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="bg-white border-3 border-slate-700 rounded-lg shadow-[6px_6px_0px_0px_#64748b] p-6"
+        className="bg-white border-3 border-slate-700 rounded-lg shadow-[4px_4px_0px_0px_#475569] p-6"
       >
         <div className="flex items-center gap-3 mb-4">
           <Search className="h-5 w-5 text-slate-600" />
@@ -147,8 +187,10 @@ export default function TransactionsPage() {
             {/* Date Inputs Container */}
             <div className="flex flex-col sm:flex-row gap-3 lg:w-auto">
               {/* Start Date */}
-              <div className="flex flex-col space-y-1">
-                <label className="text-sm font-semibold text-slate-700 ml-1">Start Date</label>
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-semibold text-slate-700 whitespace-nowrap">
+                  Start Date
+                </label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-20 pointer-events-none">
                     <Calendar className="h-4 w-4 text-slate-600" />
@@ -164,8 +206,10 @@ export default function TransactionsPage() {
               </div>
 
               {/* End Date */}
-              <div className="flex flex-col space-y-1">
-                <label className="text-sm font-semibold text-slate-700 ml-1">End Date</label>
+              <div className="flex items-center gap-2">
+                <label className="text-sm font-semibold text-slate-700 whitespace-nowrap">
+                  End Date
+                </label>
                 <div className="relative">
                   <div className="absolute left-3 top-1/2 transform -translate-y-1/2 z-20 pointer-events-none">
                     <Calendar className="h-4 w-4 text-slate-600" />
@@ -180,6 +224,7 @@ export default function TransactionsPage() {
                 </div>
               </div>
             </div>
+
           </div>
           {/* Clear Filters Button */}
           {(searchQuery || startDate || endDate) && (
@@ -200,7 +245,7 @@ export default function TransactionsPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="bg-white border-3 border-slate-700 rounded-lg shadow-[6px_6px_0px_0px_#64748b] p-6"
+        className="bg-white border-3 border-slate-700 rounded-lg shadow-[4px_4px_0px_0px_#475569] p-6"
       >
         <h2 className="text-lg font-bold text-slate-800 mb-6">All Transactions ({filteredTransactions.length})</h2>
 
@@ -212,7 +257,7 @@ export default function TransactionsPage() {
                   <Search className="h-8 w-8 text-slate-600" />
                 </div>
                 <p className="text-slate-600 font-medium">No transactions found</p>
-                <p className="text-slate-500 text-sm mt-1">Try adjusting your search criteria</p>
+                <p className="text-slate-500 text-sm mt-1">Try adjusting your search criteria or no data exists.</p>
               </motion.div>
             ) : (
               filteredTransactions.map((transaction, index) => (
@@ -242,7 +287,6 @@ export default function TransactionsPage() {
                     </motion.div>
                     <div className="flex-1">
                       <p className="text-base font-semibold text-slate-800">{transaction.description}</p>
-                      {/* Mobile: Amount and Date side by side */}
                       <div className="flex items-center justify-between sm:block">
                         <motion.p
                           whileHover={{ scale: 1.02 }}
@@ -252,6 +296,7 @@ export default function TransactionsPage() {
                           {transaction.type === "income" ? "+" : "-"}Rp {formatCurrency(transaction.amount)}
                         </motion.p>
                         <p className="text-sm text-slate-600 font-medium">
+                          {/* Pastikan transaction.date bisa diparsing oleh new Date() */}
                           {formatDateShort(new Date(transaction.date))}
                         </p>
                       </div>

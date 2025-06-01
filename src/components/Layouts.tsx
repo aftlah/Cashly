@@ -87,7 +87,7 @@ export const Layouts = ({ children }: LayoutsProps) => {
     if (loading) {
         return (
             <div className="flex items-center justify-center min-h-screen bg-slate-50">
-                <div className="text-center bg-white border-3 border-slate-700 rounded-lg p-8 shadow-[6px_6px_0px_0px_#64748b]">
+                <div className="text-center bg-white border-3 border-slate-700 rounded-lg p-8 shadow-[4px_4px_0px_0px_#475569]">
                     <div className="animate-spin rounded-full h-12 w-12 border-4 border-slate-300 border-t-slate-700 mx-auto mb-4"></div>
                     <p className="text-lg text-slate-800 font-bold">Loading...</p>
                 </div>
@@ -99,7 +99,7 @@ export const Layouts = ({ children }: LayoutsProps) => {
         <div className="flex flex-col min-h-screen bg-slate-50">
             {/* Fixed Header */}
             <header className="fixed top-3 md:top-2 left-0 right-0 z-50 w-full px-4">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center bg-white border-3 border-slate-700 rounded-lg shadow-[6px_6px_0px_0px_#64748b] justify-between">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center bg-white border-3 border-slate-700 rounded-lg shadow-[4px_4px_0px_0px_#475569] justify-between">
                     <h1 className="text-2xl font-bold text-slate-800">Cashly</h1>
                     <div className="flex items-center space-x-4">
                         {/* Profile Dropdown */}
@@ -126,7 +126,7 @@ export const Layouts = ({ children }: LayoutsProps) => {
 
                             <DropdownMenuContent
                                 align="end"
-                                className="w-48 border-3 border-slate-700 bg-white rounded-lg shadow-[4px_4px_0px_0px_#64748b]"
+                                className="w-48 border-3 border-slate-700 bg-white rounded-lg shadow-[4px_4px_0px_0px_#475569]"
                             >
                                 <DropdownMenuItem
                                     onClick={handleProfileClick}
