@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata } from "next";
 import "./globals.css";
 import { LayoutWrapper } from "@/components/LayoutWrapper";
 
@@ -13,15 +13,21 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Cashly",
   description: "Manage your finances wisely every day.",
+  icons: {
+    icon: [
+      { url: "/cashly-logo.png", sizes: "32x32", type: "image/png" },
+      { url: "/cashly-logo-192.png", sizes: "192x192", type: "image/png" },
+    ],
+    shortcut: "/cashly-logo.png",
+  },
 };
 
 export const viewport = {
   themeColor: "#10b981",
 };
-
 
 export default function RootLayout({
   children,
@@ -29,8 +35,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`antialiased`}> {/* Font variabel sudah di html, cukup antialiased di body */}
         <LayoutWrapper>{children}</LayoutWrapper>
       </body>
     </html>

@@ -8,12 +8,12 @@
     "theme_color": "#10b981",
     "icons": [
       {
-        "src": "/public/vercel.svg",
+        "src": "/public/cashly-logo.png",
         "sizes": "192x192",
         "type": "image/png"
       },
       {
-        "src": "/public/vercel.svg",
+        "src": "/public/cashly-logo.png",
         "sizes": "512x512",
         "type": "image/png"
       }
